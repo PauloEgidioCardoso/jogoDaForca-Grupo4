@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="jogoForca.css">
+    <title>Jogo da Forca - Algoritimo (SENAI-SC)</title>
+</head>
+
+<body>
+
+    <header>
+        <h2>Jogo da Forca</h2>
+    </header>
+
+    <main>
+        <h4 id="chances">Você possui 6 tentativas</h4>
+        <div id="imgForca"></div>
+        <h4 id="traco"></h4>
+        <p id="dica"></p>
+        <label for="">Informe uma Letra:</label>
+        <input type="text" id="valorLetra">
+        <button type="button" class="botao" onclick="verificarLetra()">Verificar Letra</button><br>
+        <button type="button" id="btnIniciar" class="botao" onclick="iniciarJogo()">Iniciar Jogo</button>
+    </main>
+
+    <footer>
+        <p>Análise e Desenvolvimento de Sistemas (SENAI-SC)</p>
+    </footer>
+
+    <script language="JavaScript">
+
+        var imagemForca = document.querySelector("#imgForca"); // Cria um espaço na página com a imagem da forca na posição 0;
+        var img = document.createElement("img");
+        img.setAttribute("width", 130);
+        img.setAttribute("heigth", 130);
+        img.setAttribute("src", "img/0.jpg");
+
+        var retornTracos = document.getElementById("traco"); // Variáveis globais ligadas ao html;
+        var retornDica = document.getElementById("dica");
+        var letraInformada = document.getElementById("valorLetra");
+        var chances = document.getElementById("chances");
+
+        function limparVar() { // Limpa a variavél letra errada;
+            letraErrada = 0;
+        }
+
+        function limparCampo() { // limpa o campo input;
+            letraInformada.value = "";
+            letraInformada.focus();
+        }
+
+        var palavraSorteada = []; // Após sortiar a palavra, ela é colocada nesse vetor global para usar no programa todo;
+        var vetorTracos = []; // Receberá em cada posição o traços na mesma quantidade de letras da palavra;
+
+        function verificarLetra() { //Essa função troca os traços por letras;
+            var letra = letraInformada.value;// Pega a letra informada;
+            var tamLetra = letra.length; // Verifica o tamanho da letra informada;
+
+            if (tamLetra > 1) { // Validação caso o usuário informe duas ou mais letras, pode informar somente uma por tentativa;
+                alert("Informe somente uma letra de A-Z !!!");
+                limparCampo();
+                return;
+            }
+
+            var resVerificado = verificar(); // Recebe e armazena os valores verificados na função verificar();
+            retornTracos.textContent = resVerificado; // Troca o html pelo valor verificado;
+
+            if (letraErrada < 5) { // Informa a quantidade de tentativas que ainda restam ao usuário;
+                chances.textContent = "Você ainda possui " + (6 - letraErrada) + " tentativas";
+            }
+            else if (letraErrada == 5) {
+                chances.textContent = "Você ainda possui " + (6 - letraErrada) + " tentativa";
+            }
+            else {
+                chances.textContent = "Você não possui tentativa";
+            }
+            limparCampo(); // Ao informar a letra, o programa limpa o campo input letra;
+        }
+
+        var letraErrada = 0; // Esse contador recebe a quantidade de letras erradas que o usuário informou;
+        function verificar() { // dentro desta função é feita a verificação da letra informa pelo usuário em relação as letras da palavra;
+            var letra = letraInformada.value; // Pegar a letra informada;
+            var letra = letra.toUpperCase(); // Transforma a letra em maiúscula ;
+            var tamVetor = palavraSorteada.length; // Calcula o tamanho do vetor aonde se encontra a palavra sorteada;
+            var palavra = palavraSorteada[tamVetor - 1]; // Pega sempre a palavra na última posição do vetor, é necessário caso o usuário clique em recomeçar;
+            var tamPalavra = palavra.length; // caucula o tamanho da palavra da vez;
+            var verificado = ""; // Armazena o valor do vetorTracos com espaço;
+            var verificarVencedor = ""; // Armazena o valor do vetorTracos sem espaço, para ser comparado a palavra sorteada;
+            var iErro = 0;
+
+            for (var i = 0; i <= tamPalavra - 1; i++) { // Compara a letra informada com as letras da palavra e retorna a letra ou traço;
+
+                if (letra == palavra.charAt(i)) { // Se a letra informada for igual a letra da posição do contador, então o vetor que esta completo com traços terá o valor da posição substituida pela letra;
+                    vetorTracos[i] = letra; // Troca a o valor dentro da posição informada pelo contador;
+                }
+                else {
+                    iErro++ // Incrementa sempre que a letra informada for diferente da letra de cada posição da palavra;
+                }
+            }
+
+            if (iErro == tamPalavra) { // Se não conter a letra informada na palavra, o contador terá o mesmo tamanho da palavra;
+                letraErrada++ // Desta forma será incrementado o contador letra errada que se encontra em uma posição global;
+            }
+
+            if (letraErrada == 1) { // Conforme o contador for incrementado, a imagem será trocada;
+                img.setAttribute("src", "img/1.jpg");
+            }
+            else if (letraErrada == 2) {
+                img.setAttribute("src", "img/2.jpg");
+            }
+            else if (letraErrada == 3) {
+                img.setAttribute("src", "img/3.jpg");
+            }
+            else if (letraErrada == 4) {
+                img.setAttribute("src", "img/4.jpg");
+            }
+            else if (letraErrada == 5) {
+                img.setAttribute("src", "img/5.jpg");
+            }
+            else if (letraErrada == 6) { // Se o usuário errar 6 vezes o progama mostrará um alert com uma mensagem;
+                img.setAttribute("src", "img/6.jpg");
+                alert("Que pena!!! Você Perdeu.");
+                return palavra;
+            }
+
+            for (var i = 0; i <= tamPalavra - 1; i++) { // Pega o valor dentro de cada posição do vetor e armazena na variável "verificado" para então retornar;
+                verificado += " " + vetorTracos[i]; // Isto foi feito para retornar um valor sem vírgula;
+                verificarVencedor += vetorTracos[i]; // Aqui armazena a informação do vetor sem espaço, para que seja comparado com palavra sorteada;
+            }
+
+            if (verificarVencedor == palavra) { // Se a variável for exatamente igual a palavra sorteada, então informa um alert;
+                alert("Parabéns!!! Você Venceu.");
+                return palavra;
+            }
+
+            return verificado; // Retorna o valor verificado dentro da função;
+        }
+
+        imagemForca.appendChild(img); // Imprime no espaço criado a imagem da forca;
+
+        var palavras = new Array(); // Vetor com palavras a serem sorteadas;
+        palavras[0] = "FELICIDADE";
+        palavras[1] = "BICICLETA";
+        palavras[2] = "ARGENTINA"
+        palavras[3] = "PANELA"
+        palavras[4] = "TOMATE"
+        palavras[5] = "CACHORRO"
+        palavras[6] = "MANOEL"
+        palavras[7] = "FUTEBOL"
+        palavras[8] = "LULA"
+        palavras[9] = "JAVA"
+
+        var dicas = new Array(); //Vetor com dicas que acompanharão as palavras;
+        dicas[0] = "Sentimento";
+        dicas[1] = "Transporte";
+        dicas[2] = "País";
+        dicas[3] = "Utensílio";
+        dicas[4] = "Fruta";
+        dicas[5] = "Animal";
+        dicas[6] = "Português";
+        dicas[7] = "Esporte";
+        dicas[8] = "Presidente";
+        dicas[9] = "Programação";
+
+        function iniciarJogo() {
+            img.setAttribute("src", "img/0.jpg");
+            chances.textContent = "Você possui 6 tentativas";
+            limparVar();
+            letraInformada.focus();
+
+            var numero = Number(sorteio()); // Apertando o botão iniciar jogo o programa sorteia um numero aleatório na função sorteio;
+            var palavra = palavras[numero]; // Escolhe a palavra pré-estabelecidas no vetor com base no numero random recebido da função sorteio;
+            palavraSorteada.push(palavra); // Joga a palavra sorteada para dentro de um vetor global para ser usado no programa;
+            var dica = dicas[numero]; // Sorteia a dica a ser informada;
+            var tamanho = palavra.length; // Verifica o tamanho da palavra;
+            var trocarBotao = document.getElementById("btnIniciar");
+            var tracos = retornarTracos(palavra, tamanho); // Recebe a quantidade de traços da função retornarTraços;
+            retornTracos.textContent = tracos; // Altera o html pela quantidade de traços;
+            retornDica.textContent = "Dica: " + dica + " com " + tamanho + " letras."; // Informa a dica para o usuário;
+            trocarBotao.textContent = "Recomeçar"; // troca o botão iniciar jogo por recomeçar;
+            vetorTracos = tracos.split(" ");
+        }
+
+        function sorteio() {
+            var sorteio = Math.floor(Math.random() * 10); // Escolhe um valor aleatório;
+            return sorteio; // Retorna para a função iniciarJogo um numero aleatório;
+        }
+
+        function retornarTracos(palavra, tamanho) {
+            var tracos = ""; // Armazena a quantidade de traços de acordo com o número de caracteres da palavra;
+            for (var i = 0; i < tamanho; i++) {
+                if (palavra.charAt(i) != " ") {
+                    tracos += "_ ";
+                }
+            }
+            return tracos; // Retorna para a função iniciarJogo a quantidade de traços;
+        }
+
+    </script>
+</body>
+
+</html>
