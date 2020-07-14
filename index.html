@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -58,7 +58,7 @@
             var letra = letraInformada.value;// Pega a letra informada;
             var tamLetra = letra.length; // Verifica o tamanho da letra informada;
 
-            if (tamLetra > 1) { // Validação caso o usuário informe duas ou mais letras, pode informar somente uma por tentativa;
+            if (tamLetra > 1 || letra == "") { // Validação caso o usuário informe duas ou mais letras, pode informar somente uma por tentativa;
                 alert("Informe somente uma letra de A-Z !!!");
                 limparCampo();
                 return;
@@ -103,28 +103,27 @@
             if (iErro == tamPalavra) { // Se não conter a letra informada na palavra, o contador terá o mesmo tamanho da palavra;
                 letraErrada++ // Desta forma será incrementado o contador letra errada que se encontra em uma posição global;
             }
-
             if (letraErrada == 1) { // Conforme o contador for incrementado, a imagem será trocada;
                 img.setAttribute("src", "img/1.jpg");
             }
-            else if (letraErrada == 2) {
+            if (letraErrada == 2) {
                 img.setAttribute("src", "img/2.jpg");
             }
-            else if (letraErrada == 3) {
+            if (letraErrada == 3) {
                 img.setAttribute("src", "img/3.jpg");
             }
-            else if (letraErrada == 4) {
+            if (letraErrada == 4) {
                 img.setAttribute("src", "img/4.jpg");
             }
-            else if (letraErrada == 5) {
+            if (letraErrada == 5) {
                 img.setAttribute("src", "img/5.jpg");
             }
-            else if (letraErrada == 6) { // Se o usuário errar 6 vezes o progama mostrará um alert com uma mensagem;
+            if (letraErrada == 6) { // Se o usuário errar 6 vezes o progama mostrará um alert com uma mensagem;
                 img.setAttribute("src", "img/6.jpg");
                 alert("Que pena!!! Você Perdeu.");
                 return palavra;
             }
-
+            
             for (var i = 0; i <= tamPalavra - 1; i++) { // Pega o valor dentro de cada posição do vetor e armazena na variável "verificado" para então retornar;
                 verificado += " " + vetorTracos[i]; // Isto foi feito para retornar um valor sem vírgula;
                 verificarVencedor += vetorTracos[i]; // Aqui armazena a informação do vetor sem espaço, para que seja comparado com palavra sorteada;
